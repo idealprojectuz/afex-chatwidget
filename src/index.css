@@ -5,8 +5,13 @@
   color: #fff;
 } */
 body {
-  background-color: #494747;
+  /* background-color: #494747; */
   font-family: "Inter", sans-serif;
   font-optical-sizing: auto;
   font-style: normal;
+}
+
+.scrollbar-hidden {
+
+  scrollbar-width: none;
 }

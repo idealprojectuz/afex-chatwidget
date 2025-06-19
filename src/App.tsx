@@ -1,10 +1,21 @@
 import React, { useState, useRef, useEffect } from "react";
 import "./App.css";
 import { isMobile } from "./utils/mobilecheck";
+import { Header } from "./components/header";
+import { Chatbox } from "./components/chatbox";
+import { io } from "socket.io-client";
 
 function App() {
   const [isOpen, setIsOpen] = useState(false);
-
+  const socket = io("ws://127.0.0.1:3000", {
+    // autoConnect: true,
+    withCredentials: true,
+  });
+  useEffect(() => {
+    socket.on("connect", () => {
+      console.log(socket.id);
+    });
+  }, []);
   // React.useEffect(() => {
   //   setWindowWidth(window.innerWidth);
   // }, [window.innerWidth]);
@@ -35,81 +46,72 @@ function App() {
       {isOpen && (
         <div
           style={{
-            height: `500px`,
+            height: `800px`,
             boxShadow: "0px 2px 16px #a0a0a07d",
           }}
           className={`bg-[#fff] fixed bottom-0 right-[50px]  overflow-hidden ${
             isMobile() ? "w-full" : "w-[388px]"
           } `}>
           {/* Draggable Header */}
-          <div className="cursor-move header  justify-between rounded-t-[6px] flex gap-[8px] items-center px-5 bg-repeat-round bg-[#242426] w-full h-[65px]">
-            <div className="flex items-center gap-[5px]">
-              <img
-                src="/operator.png"
-                className="w-[40px] object-contain rounded-full h-[40px] bg-white"
-              />
-              <div className="flex flex-col select-none">
-                <h2 className="text-[18px] text-[#F2F2F7] font-[400] leading-[15px]">
-                  Oysanam
-                </h2>
-              </div>
-              <div>
-                <svg
-                  width={9}
-                  height={10}
-                  viewBox="0 0 9 10"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg">
-                  <rect
-                    y="0.918701"
-                    width="8.1626"
-                    height="8.1626"
-                    rx="4.0813"
-                    fill="#0B84FF"
-                  />
-                </svg>
-              </div>
-            </div>
-            <div
-              onClick={() => {
-                setIsOpen(false);
-              }}>
-              <svg
-                width={20}
-                height={20}
-                viewBox="0 0 20 20"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M15.8334 4.16669L4.16675 15.8334"
-                  stroke="#F2F2F7"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M15.8334 15.8334L4.16675 4.16669"
-                  stroke="#F2F2F7"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
-          </div>
+          <Header
+            online={true}
+            operator="Hayotbek Samandarov"
+            setIsOpen={setIsOpen}
+          />
 
           {/* Chat Body */}
-          <div className="chatarea pt-2 h-full px-2 bg-[#242426] border-t border-[#444446]  ">
-            <div className="flex justify-end">
-              <div className=" rounded-[12px] text-[16px] p-2 bg-[#2D2D2F] border border-[#444446] text-[#F2F2F7] w-[80%]">
-                Assalomu aleykum hurmatli mijoz! Hozirda barcha operatorlarimiz
-                offline holatida. Savol va takliflaringizni yozib qoldiring. Biz
-                siz bilan aloqaga chiqamiz. Siz bilan bog'lanishimiz uchun
-                telefon raqamlaringizni qoldirishni unutmang.
-              </div>
-            </div>
+          <Chatbox />
+          <div className="bg-[#242426] border-t border-[#444446] h-[60px] absolute bottom-0 left-0 w-full">
+            <form
+              method="post"
+              className="flex items-center gap-[12px]  px-[12px] h-full"
+              action="https://afex.uz">
+              <button>
+                <svg
+                  width={24}
+                  height={24}
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M11.96 1.75004C9.93447 1.75795 7.95668 2.36579 6.27635 3.49687C4.59601 4.62795 3.28848 6.23155 2.51881 8.10518C1.74914 9.9788 1.55185 12.0385 1.95186 14.0241C2.35186 16.0098 3.33124 17.8324 4.76631 19.2619C6.20138 20.6914 8.02779 21.6637 10.015 22.0559C12.0022 22.4482 14.0611 22.2429 15.9317 21.4659C17.8023 20.689 19.4008 19.3752 20.5253 17.6904C21.6498 16.0057 22.25 14.0256 22.25 12C22.2487 10.651 21.9813 9.31544 21.4633 8.06984C20.9452 6.82423 20.1866 5.69301 19.2308 4.74095C18.275 3.78889 17.1409 3.03469 15.8933 2.52147C14.6456 2.00825 13.309 1.7461 11.96 1.75004ZM17.25 13H12.97V17.27C12.97 17.5352 12.8646 17.7896 12.6771 17.9772C12.4896 18.1647 12.2352 18.27 11.97 18.27C11.7048 18.27 11.4504 18.1647 11.2629 17.9772C11.0754 17.7896 10.97 17.5352 10.97 17.27V13H6.69001C6.4248 13 6.17043 12.8947 5.98289 12.7071C5.79536 12.5196 5.69001 12.2653 5.69001 12C5.69001 11.7348 5.79536 11.4805 5.98289 11.2929C6.17043 11.1054 6.4248 11 6.69001 11H10.97V6.68004C10.97 6.41482 11.0754 6.16048 11.2629 5.97294C11.4504 5.78541 11.7048 5.68004 11.97 5.68004C12.2352 5.68004 12.4896 5.78541 12.6771 5.97294C12.8646 6.16048 12.97 6.41482 12.97 6.68004V10.96H17.25C17.5152 10.96 17.7696 11.0654 17.9571 11.2529C18.1446 11.4405 18.25 11.6948 18.25 11.96C18.25 12.2253 18.1446 12.4796 17.9571 12.6672C17.7696 12.8547 17.5152 12.96 17.25 12.96V13Z"
+                    fill="#007AFF"
+                  />
+                </svg>
+              </button>
+              <button>
+                <svg
+                  width={24}
+                  height={24}
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M16.25 2.75H7.75C6.22582 2.75264 4.76477 3.35928 3.68701 4.43704C2.60925 5.5148 2.00264 6.97582 2 8.5V15.5C2.00264 17.0242 2.60925 18.4852 3.68701 19.5629C4.76477 20.6407 6.22582 21.2474 7.75 21.25H16.25C17.7742 21.2474 19.2352 20.6407 20.313 19.5629C21.3907 18.4852 21.9974 17.0242 22 15.5V8.5C21.9974 6.97582 21.3907 5.5148 20.313 4.43704C19.2352 3.35928 17.7742 2.75264 16.25 2.75ZM8 6.09998C8.63917 6.09998 9.25214 6.35388 9.7041 6.80585C10.1561 7.25781 10.41 7.87081 10.41 8.50998C10.41 9.14915 10.1561 9.76215 9.7041 10.2141C9.25214 10.6661 8.63917 10.92 8 10.92C7.68351 10.9193 7.37027 10.8563 7.07812 10.7346C6.78598 10.6129 6.52069 10.4348 6.29736 10.2106C5.84634 9.75767 5.59364 9.14415 5.59497 8.50497C5.5963 7.8658 5.85154 7.25336 6.30444 6.80234C6.75734 6.35131 7.37084 6.09865 8.01001 6.09998H8ZM20.5 12.78L18.3201 11.09C17.6921 10.6523 16.9301 10.4495 16.1677 10.5172C15.4053 10.5848 14.6911 10.9186 14.15 11.46L11.8201 13.79C11.3322 14.262 10.6986 14.5546 10.0229 14.62C9.34726 14.6854 8.6693 14.5197 8.09998 14.15C7.82251 13.9667 7.49143 13.8821 7.16003 13.91C6.82724 13.945 6.51656 14.0933 6.28003 14.33L3.84998 17.17C3.58748 16.5689 3.46771 15.9151 3.5 15.26L5.18005 13.31C5.66449 12.8204 6.30263 12.5125 6.9873 12.4378C7.67198 12.3631 8.3615 12.5263 8.94006 12.9C9.21668 13.0873 9.55012 13.1719 9.88257 13.139C10.215 13.1061 10.5254 12.9579 10.76 12.72L13.09 10.4C13.8873 9.60532 14.9399 9.11824 16.0618 9.0249C17.1836 8.93157 18.3023 9.238 19.22 9.88998L20.5 10.89V12.78Z"
+                    fill="#007AFF"
+                  />
+                  <path
+                    d="M8.90983 8.5101C8.90983 8.69008 8.85638 8.86604 8.75638 9.01569C8.65639 9.16533 8.51434 9.28195 8.34806 9.35083C8.18178 9.41971 7.99882 9.43773 7.8223 9.40262C7.64578 9.36751 7.48363 9.28083 7.35636 9.15356C7.22909 9.0263 7.14245 8.86418 7.10734 8.68765C7.07222 8.51113 7.09022 8.32815 7.15909 8.16187C7.22797 7.99558 7.34453 7.85347 7.49418 7.75348C7.64383 7.65349 7.81981 7.6001 7.99979 7.6001C8.1193 7.6001 8.23765 7.62364 8.34806 7.66937C8.45847 7.7151 8.55872 7.78214 8.64323 7.86664C8.72773 7.95114 8.79476 8.05146 8.84049 8.16187C8.88622 8.27227 8.90983 8.3906 8.90983 8.5101Z"
+                    fill="#007AFF"
+                  />
+                </svg>
+              </button>
+              <input className="w-full outline-none text-[#AAAAAA] rounded-[29px] px-[15px] h-[36px] bg-[#2D2D2F]" />
+              <button>
+                <svg
+                  width={28}
+                  height={28}
+                  viewBox="0 0 28 28"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M22.3345 13.8833C22.3357 14.3446 22.2025 14.7964 21.9512 15.1833C21.7074 15.5741 21.3537 15.8842 20.9345 16.075L9.14286 21.7916C8.81448 21.9566 8.45199 22.0422 8.08452 22.0416C7.93037 22.0419 7.77666 22.0251 7.62619 21.9916C7.1114 21.895 6.64281 21.6314 6.29285 21.2416C5.94037 20.8523 5.72381 20.3591 5.67572 19.8361C5.62763 19.3131 5.75062 18.7887 6.02619 18.3416L8.89286 14.3583C8.95908 14.2 8.99307 14.03 8.99285 13.8583C8.99317 13.6732 8.95037 13.4906 8.86786 13.325L6.21785 9.57497C5.94404 9.11957 5.82969 8.58592 5.89285 8.0583C5.94981 7.55167 6.16607 7.07618 6.5105 6.7003C6.85494 6.32442 7.30977 6.06753 7.80952 5.96664C8.31207 5.8681 8.83277 5.92627 9.30118 6.13331L20.9679 11.6916C21.3778 11.8926 21.7231 12.2046 21.9647 12.592C22.2063 12.9794 22.3344 13.4267 22.3345 13.8833Z"
+                    fill="#007AFF"
+                  />
+                </svg>
+              </button>
+            </form>
           </div>
-          <div className="bg-[#242426] border-t border-[#444446] h-[100px] absolute bottom-0 left-0 w-full"></div>
         </div>
       )}
     </>
