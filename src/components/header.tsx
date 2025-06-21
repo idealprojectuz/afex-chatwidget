@@ -1,4 +1,5 @@
 import React from "react";
+import { isMobile } from "../utils/mobilecheck";
 
 interface HeaderInterface {
   operator: string;
@@ -8,7 +9,10 @@ interface HeaderInterface {
 export const Header = ({ operator, online, setIsOpen }: HeaderInterface) => {
   return (
     <>
-      <div className="cursor-pointer header  justify-between rounded-t-[6px] flex gap-[8px] items-center px-5 bg-repeat-round bg-[#242426] w-full h-[65px]">
+      <div
+        className={`cursor-pointer header  justify-between  ${
+          isMobile() ? "" : "rounded-t-[6px]"
+        } flex gap-[8px] items-center px-5 bg-repeat-round bg-[#242426] w-full h-[7vh]`}>
         <div className="flex items-center gap-[5px]">
           <img
             src="/operator.png"

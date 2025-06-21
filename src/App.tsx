@@ -46,12 +46,12 @@ function App() {
       {isOpen && (
         <div
           style={{
-            height: `800px`,
+            height: ``,
             boxShadow: "0px 2px 16px #a0a0a07d",
           }}
-          className={`bg-[#fff] fixed bottom-0 right-[50px]  overflow-hidden ${
-            isMobile() ? "w-full" : "w-[388px]"
-          } `}>
+          className={`bg-[#fff] fixed bottom-0  ${
+            isMobile() ? "h-screen" : "h-[70vh] right-[50px]"
+          }  overflow-hidden ${isMobile() ? "w-full" : "w-[388px]"} `}>
           {/* Draggable Header */}
           <Header
             online={true}
